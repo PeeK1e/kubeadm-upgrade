@@ -1,0 +1,7 @@
+---
+- name: update system
+  hosts: control-plane[0]
+  become: true
+  gather_facts: true
+  roles:
+  - role: upgrade

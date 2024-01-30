@@ -1,0 +1,2 @@
+[control-plane]
+kube-7 ansible_host=37.27.43.249 ansible_user=ryuko ansible_port=1337

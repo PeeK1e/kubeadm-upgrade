@@ -1,0 +1,8 @@
+---
+- name: get latest kube package version
+  ansible.builtin.shell: apt-cache madison kubeadm | grep -F {{ kubeVersion }} | head -1 | tr -s ' ' | cut -d ' ' -f4
+  register: kubelet_version_out
+
+- name: set kube version
+  ansible.builtin.set_fact:
+    kube_version: "{{ kubelet_version_out.stdout }}"

@@ -1,0 +1,16 @@
+---
+- name: upgrade kubeadm
+  block:
+  - name: kubeadm
+    ansible.builtin.dpkg_selections:
+      name: kubeadm
+      selection: install #equals unhold
+
+  - name: upgrade and install
+    ansible.builtin.apt:  
+      pkg:
+      - kubeadm={{ kube_version }
+      
+  - name: kubadm plan
+    ansible.builtin.shell: kubeadm upgrade plan
+  

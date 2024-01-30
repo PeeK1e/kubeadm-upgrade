@@ -1,0 +1,12 @@
+---
+- name: "packages"
+  ansible.builtin.include_tasks: "upgrade-repo.yaml"
+
+- name: "artifacts"
+  ansible.builtin.include_tasks: "get-versions.yaml"
+
+- name: "first control plane"
+  ansible.builtin.include_tasks: "upgrade-first-cp.yaml"
+
+- name: "kube"
+  ansible.builtin.include_tasks: "upgrade-kube-packages.yaml"
