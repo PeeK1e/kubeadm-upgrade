@@ -8,6 +8,7 @@
     action: upgrade-first-cp
 
 - name: patch other cp
+  serial: 1
   hosts: control-plane[1:]
   become: true
   gather_facts: true
@@ -16,6 +17,7 @@
     action: upgrade-other-cp
 
 - name: upgrade packages on cps
+  serial: 1
   hosts: control-plane
   become: true
   gather_facts: true
@@ -25,6 +27,7 @@
       tasks_from: upgrade-node 
 
 - name: upgrade nodes
+  serial: 1
   hosts: nodes
   become: true
   gather_facts: true

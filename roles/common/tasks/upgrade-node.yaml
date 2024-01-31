@@ -13,6 +13,7 @@
 - name: wait
   pause:
     prompt: check drain state. press enter to continue.
+    seconds: 15
 
 - name: upgrade packages
   ansible.builtin.include_tasks: "upgrade-kube-packages.yaml"
@@ -44,7 +45,8 @@
 
 - name: uncordon node
   ansible.builtin.shell: |
-    kubectl uncordon {{ inventory_hostname }}
+    kubectl uncordon {{ inventory_hostname }} \
+      --kubeconfig /etc/kubernetes/admin.conf
   delegate_to: "{{ groups['control-plane'][0] }}"
   retries: 20
   delay: 15
@@ -53,3 +55,4 @@
 - name: wait uncordon
   pause:
     prompt: check drain state. press enter to continue.
+    seconds: 15
