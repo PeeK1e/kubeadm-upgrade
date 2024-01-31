@@ -4,8 +4,8 @@
     kubectl drain {{ inventory_hostname }} \
       --ignore-daemonsets \
       --delete-emptydir-data \
-      --grace-period=120 \
-      --timeout=120s \
+      --grace-period={{ drainGracePeriod }} \
+      --timeout={{ drainTimeOut }} \
       --kubeconfig /etc/kubernetes/admin.conf
   delegate_to: "{{ groups['control-plane'][0] }}"
   ignore_errors: true

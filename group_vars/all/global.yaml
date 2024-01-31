@@ -1,3 +1,9 @@
 ---
-kubeVersion: 1.28
+# targeted kubernetes version in major.minor
+kubeVersion: 1.29
+# targeted crio version in major.minor
 crioVersion: 1.28
+# time until a pod is killed
+drainGracePeriod: 30
+# time until the drain command times out
+drainTimeOut: 120s
