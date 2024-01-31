@@ -4,6 +4,9 @@
     name: "*"
     state: latest
 
+- name: get variables
+  ansible.builtin.include_tasks: "get-versions.yaml"
+
 - name: unhold packages
   block:
     - name: kubeadm

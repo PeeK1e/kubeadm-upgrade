@@ -5,4 +5,4 @@
 
 - name: set kube version
   ansible.builtin.set_fact:
-    kube_version: "{{ kubelet_version_out.stdout }}"
+    kube_version: "{{ kubelet_version_out.stdout | default('0.0.0-0.0')}}"

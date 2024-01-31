@@ -1,0 +1,10 @@
+---
+- name: include common
+  ansible.legacy.include_role:
+    name: common
+
+- name: run plan
+  ansible.builtin.include_tasks: "controlplane-plan.yaml" 
+
+- name: apply upgrade
+  ansible.builtin.shell: "kubeadm upgrade apply {{ new_version_out.stdout }}"

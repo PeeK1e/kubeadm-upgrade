@@ -1,4 +1,16 @@
 ---
+- name: remove known repos
+  block:
+  - ansible.builtin.apt_repository:
+      repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v{{ kubeVersion }}/deb/ /"
+      state: absent
+  - ansible.builtin.apt_repository:
+      repo: "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_11/ /"
+      state: absent
+  - ansible.builtin.apt_repository:
+      repo: "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/{{ crioVersion }}/Debian_11/ /"
+      state: absent
+
 - name: add kubernetes repository
   block:
     - name: kubernetes | apt key

@@ -1,0 +1,12 @@
+---
+- name: include common
+  ansible.legacy.include_role:
+    name: common
+
+- name: kubeadm upgrade node 
+  ansible.builtin.shell: "kubeadm upgrade node"
+
+- name: include common
+  ansible.legacy.include_role:
+    name: common
+    tasks_from: upgrade-node.yaml

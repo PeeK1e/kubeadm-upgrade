@@ -1,0 +1,32 @@
+---
+- name: upgrade first control plane
+  hosts: control-plane[0]
+  become: true 
+  gather_facts: true
+  roles:
+  - role: upgrade-cp
+    action: upgrade-first-cp
+
+- name: patch other cp
+  hosts: control-plane[1:]
+  become: true
+  gather_facts: true
+  roles:
+  - role: upgrade-cp
+    action: upgrade-other-cp
+
+- name: upgrade packages on cps
+  hosts: control-plane
+  become: true
+  gather_facts: true
+  tasks:
+  - include_role:
+      name: common
+      tasks_from: upgrade-node 
+
+- name: upgrade nodes
+  hosts: nodes
+  become: true
+  gather_facts: true
+  roles:
+  - role: upgrade-node

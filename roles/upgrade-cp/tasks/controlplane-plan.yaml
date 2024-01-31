@@ -1,0 +1,30 @@
+---
+- name: upgrade kubeadm
+  block:
+    - name: unhold 
+      ansible.builtin.dpkg_selections:
+        name: kubeadm
+        selection: install #equals unhold
+
+    - name: upgrade package
+      ansible.builtin.apt:  
+        pkg:
+        - kubeadm={{ kube_version }}
+        update_cache: true
+      
+- name: kubadm plan
+  ansible.builtin.shell: kubeadm upgrade plan --output json | grep -iv "^\[[a-zA-Z]*].*$" | jq '.components[] | select(.name=="kubelet") | .newVersion' | tr -d '"'
+  register: new_version_out 
+
+- name: set fact
+  ansible.builtin.set_fact:
+    new_version: "{{ new_version_out.stdout | default('v0.0.0', true) }}"
+
+- name: make sure installed version equals planned version
+  ansible.builtin.debug:
+    msg: "original: {{ new_version_out.stdout }} kube: {{ new_version }} and apt: {{ kube_version }}" 
+
+- name: make sure installed version equals planned version
+  ansible.builtin.fail:
+    msg: versions not equal or you are on the latest patch of {{ kubeVersion }}
+  when: new_version[1:] is version(kube_version.split('-')[0], 'ne')

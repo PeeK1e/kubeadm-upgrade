@@ -1,0 +1,45 @@
+---
+- name: drain node
+  ansible.builtin.shell: |
+    kubectl drain node {{ inventory_hostname }} \
+      --ignore-daemonsets \
+      --delete-emptydir-data \
+      --grace-period=120 \
+      --timeout=120 \
+      --kubeconfig /etc/kubernetes/admin.conf
+  delegate_to: control-plane[0]
+  ignore_errors: true
+
+- name: upgrade packages
+  ansible.builtin.include_tasks: "upgrade-kube-packages.yaml"
+
+- name: reload services
+  block:
+  - ansible.builtin.systemd_service:
+      daemon_reload: true    
+  - ansible.builtin.systemd_service:
+      enabled: true
+      state: restarted
+      name: crio
+  - ansible.builtin.systemd_service:
+      enabled: true
+      state: restarted
+      name: kubelet
+
+- name: restart machine
+  ansible.builtin.reboot:
+
+- name: wait for kubelet to be running
+  ansible.builtin.systemd_service:
+    name: kubelet
+    state: started
+  register: kubeletDetails
+  until: kubeletDetails.status.ActiveState == 'active'
+  retries: 20
+  delay: 15
+
+- name: uncordon node
+  ansible.builtin.shell: |
+    kubectl uncordon node {{ inventory_hostname }} \
+  delegate_to: control-plane[0]
+  ignore_errors: true
