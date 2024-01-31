@@ -1,14 +1,18 @@
 ---
 - name: drain node
   ansible.builtin.shell: |
-    kubectl drain node {{ inventory_hostname }} \
+    kubectl drain {{ inventory_hostname }} \
       --ignore-daemonsets \
       --delete-emptydir-data \
       --grace-period=120 \
-      --timeout=120 \
+      --timeout=120s \
       --kubeconfig /etc/kubernetes/admin.conf
-  delegate_to: control-plane[0]
+  delegate_to: "{{ groups['control-plane'][0] }}"
   ignore_errors: true
+
+- name: wait
+  pause:
+    prompt: check drain state. press enter to continue.
 
 - name: upgrade packages
   ansible.builtin.include_tasks: "upgrade-kube-packages.yaml"
@@ -40,6 +44,12 @@
 
 - name: uncordon node
   ansible.builtin.shell: |
-    kubectl uncordon node {{ inventory_hostname }} \
-  delegate_to: control-plane[0]
+    kubectl uncordon {{ inventory_hostname }}
+  delegate_to: "{{ groups['control-plane'][0] }}"
+  retries: 20
+  delay: 15
   ignore_errors: true
+
+- name: wait uncordon
+  pause:
+    prompt: check drain state. press enter to continue.
