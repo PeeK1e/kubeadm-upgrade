@@ -19,6 +19,8 @@
 - name: set fact
   ansible.builtin.set_fact:
     new_version: "{{ new_version_out.stdout | default('v0.0.0', true) }}"
+    cacheable: yes
+  when: not new_version
 
 - name: make sure installed version equals planned version
   ansible.builtin.debug:
