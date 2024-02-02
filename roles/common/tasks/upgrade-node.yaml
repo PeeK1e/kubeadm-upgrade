@@ -12,8 +12,8 @@
 
 - name: wait
   pause:
-    prompt: check drain state. press enter to continue.
-    seconds: 15
+    prompt: Pausing after drain. (press ctrl+c and a to continue immediately)
+    seconds: "{{ pauseDelayCordon }}"
 
 - name: upgrade packages
   ansible.builtin.include_tasks: "upgrade-kube-packages.yaml"
@@ -54,5 +54,5 @@
 
 - name: wait uncordon
   pause:
-    prompt: check drain state. press enter to continue.
-    seconds: 15
+    prompt: Pausing after uncordon. (press ctrl+c and a to continue immediately) 
+    seconds: "{{ pauseDelayUncordon }}"

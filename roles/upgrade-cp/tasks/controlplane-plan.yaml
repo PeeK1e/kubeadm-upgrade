@@ -11,22 +11,38 @@
         pkg:
         - kubeadm={{ kube_version }}
         update_cache: true
+
+    - name: unhold 
+      ansible.builtin.dpkg_selections:
+        name: kubeadm
+        selection: hold
       
 - name: kubadm plan
   ansible.builtin.shell: kubeadm upgrade plan --output json | grep -iv "^\[[a-zA-Z]*].*$" | jq '.components[] | select(.name=="kubelet") | .newVersion' | tr -d '"'
   register: new_version_out 
+  when: hostvars['K8S_TOKEN_HOLDER']['plan_version'] is not defined
+
+- name: output plan
+  ansible.builtin.debug:
+    msg: "plan stdout {{ new_version_out.stdout }}, stderr: {{ new_version_out.stderr }}"
+  when: hostvars['K8S_TOKEN_HOLDER']['plan_version'] is not defined
 
 - name: set fact
   ansible.builtin.set_fact:
     new_version: "{{ new_version_out.stdout | default('v0.0.0', true) }}"
-    cacheable: yes
-  when: not new_version
+  when: hostvars['K8S_TOKEN_HOLDER']['plan_version'] is not defined
+
+- name: register plan version to dummy host
+  add_host:
+    name: "K8S_TOKEN_HOLDER"
+    plan_version: "{{ new_version }}"
+  when: hostvars['K8S_TOKEN_HOLDER']['plan_version'] is not defined
 
 - name: make sure installed version equals planned version
   ansible.builtin.debug:
-    msg: "original: {{ new_version_out.stdout }} kube: {{ new_version }} and apt: {{ kube_version }}" 
+    msg: "planned version: {{ hostvars['K8S_TOKEN_HOLDER']['plan_version'] }} and apt package version: {{ kube_version }}" 
 
 - name: make sure installed version equals planned version
   ansible.builtin.fail:
     msg: versions not equal or you are on the latest patch of {{ kubeVersion }}
-  when: new_version[1:] is version(kube_version.split('-')[0], 'ne')
+  when: hostvars['K8S_TOKEN_HOLDER']['plan_version'][1:] is version(kube_version.split('-')[0], 'ne')
