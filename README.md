@@ -2,6 +2,8 @@
 
 You can upgrade your kubeadm, cri-o, Debian 11/12 based kubernetes cluster with this ansible script
 
+<img src="./res/me_upgrading_the_cluster.png" alt="people praying to a server rack" width="200"/>
+
 ## Getting Started
 
 ### Dependencies
