@@ -18,7 +18,7 @@
         selection: hold
       
 - name: kubadm plan
-  ansible.builtin.shell: kubeadm upgrade plan --output json | grep -iv "^\[[a-zA-Z]*].*$" | jq '.components[] | select(.name=="kubelet") | .newVersion' | tr -d '"'
+  ansible.builtin.shell: kubeadm upgrade plan -o json | grep -iv "^\[[a-zA-Z]*].*$" | jq '.components[] | select(.name=="kubelet") | .newVersion' | tr -d '"'
   register: new_version_out 
   when: hostvars['K8S_TOKEN_HOLDER']['plan_version'] is not defined
 
