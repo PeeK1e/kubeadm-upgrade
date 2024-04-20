@@ -1,5 +1,7 @@
 # Kubeadm Upgrade
 
+⚠ **Kubernetes 1.30 is not yet supported, since there are some changes in the kubeadm upgrade steps** ⚠
+
 You can upgrade your kubeadm, cri-o, Debian 11/12 based kubernetes cluster with this ansible script
 
 <img src="./res/me_upgrading_the_cluster.png" alt="people praying to a server rack" width="200"/>
