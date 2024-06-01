@@ -1,0 +1,7 @@
+.terraform
+.terraform*
+.gl-env
+variables.tfvars
+local/
+terraform.tfstate
+terraform.tfstate.*
