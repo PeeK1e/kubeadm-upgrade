@@ -10,6 +10,11 @@ resource "hcloud_server" "worker" {
     hcloud_ssh_key.tofu-key.name
   ]
 
+  firewall_ids = [
+    hcloud_firewall.k8s_intern.id,
+    hcloud_firewall.k8s_pub.id
+  ]
+  
   labels = {
     vm-type = "worker"
   }
