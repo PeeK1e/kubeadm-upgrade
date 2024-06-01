@@ -8,9 +8,9 @@ terraform {
       source  = "loafoe/ssh"
       version = "2.7.0"
     }
-    ansible = {
-      source  = "ansible/ansible"
-      version = "1.2.0"
+    tls = {
+      source  = "hashicorp/tls"
+      version = "4.0.5"
     }
     cilium = {
       source  = "littlejo/cilium"

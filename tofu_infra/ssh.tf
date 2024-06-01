@@ -1,6 +1,6 @@
 resource "hcloud_ssh_key" "tofu-key" {
   name       = "tofu-key"
-  public_key = var.ssh_pub_key
+  public_key = tls_private_key.ssh-key.public_key_openssh
 }
 
 resource "ssh_resource" "bootstrap_first_cp" {
@@ -10,7 +10,7 @@ resource "ssh_resource" "bootstrap_first_cp" {
   when = "create"
 
   agent       = false
-  private_key = var.ssh_private_key_location
+  private_key = tls_private_key.ssh-key.private_key_openssh
 
   commands = [
     <<EOF
@@ -37,7 +37,7 @@ resource "ssh_resource" "get_admin_conf" {
   when = "create"
 
   agent       = false
-  private_key = var.ssh_private_key_location
+  private_key = tls_private_key.ssh-key.private_key_openssh
 
   commands = [
     <<EOF
@@ -65,7 +65,7 @@ resource "ssh_resource" "certificate" {
   when = "create"
 
   agent       = false
-  private_key = var.ssh_private_key_location
+  private_key = tls_private_key.ssh-key.private_key_openssh
 
   commands = [
     <<EOT
@@ -84,7 +84,7 @@ resource "ssh_resource" "join_command" {
   when = "create"
 
   agent       = false
-  private_key = var.ssh_private_key_location
+  private_key = tls_private_key.ssh-key.private_key_openssh
 
   commands = [
     <<EOT
@@ -108,7 +108,7 @@ resource "ssh_resource" "join-cp" {
   when = "create"
 
   agent       = false
-  private_key = var.ssh_private_key_location
+  private_key = tls_private_key.ssh-key.private_key_openssh
 
   commands = [
     <<EOT
@@ -132,7 +132,7 @@ resource "ssh_resource" "join-worker" {
   when = "create"
 
   agent       = false
-  private_key = var.ssh_private_key_location
+  private_key = tls_private_key.ssh-key.private_key_openssh
 
   commands = [
     <<EOT

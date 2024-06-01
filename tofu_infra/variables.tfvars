@@ -1,5 +1,3 @@
-ssh_private_key_location = "{private key file path}"
-ssh_pub_key              = "{your pub key}"
 hcloud_token             = "{hcloud api key}"
 
 # the crio version wanted
@@ -14,14 +12,14 @@ worker = {
     name = "w-1"
     type = "cax11"
   },
-  "w-2" = {
-    name = "w-2"
-    type = "cax11"
-  },
-  "w-3" = {
-    name = "w-3"
-    type = "cax11"
-  }
+  # "w-2" = {
+  #   name = "w-2"
+  #   type = "cax11"
+  # },
+  # "w-3" = {
+  #   name = "w-3"
+  #   type = "cax11"
+  # }
 }
 
 control-plane = {
@@ -29,12 +27,12 @@ control-plane = {
     name = "cp-1"
     type = "cax11"
   },
-  "cp2" = {
-    name = "cp-2"
-    type = "cax11"
-  },
-  "cp3" = {
-    name = "cp-3"
-    type = "cax11"
-  }
+  # "cp2" = {
+  #   name = "cp-2"
+  #   type = "cax11"
+  # },
+  # "cp3" = {
+  #   name = "cp-3"
+  #   type = "cax11"
+  # }
 }
