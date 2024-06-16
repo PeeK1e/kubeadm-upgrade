@@ -16,24 +16,37 @@
         state: present
         filename: kubernetes
  
-- name: add crio repository
+- name: add crio repository (crio < 1.28)
   block:
     - name: crio | apt key
-      ansible.builtin.shell: "curl -fsSL https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/{{ crioVersion }}/Debian_11/Release.key | gpg --yes --dearmor -o /usr/share/keyrings/libcontainers-crio-archive-keyring.gpg"
+      ansible.builtin.shell: "curl -fsSL https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/{{ crioVersion }}/{{ debianVersion }}/Release.key | gpg --yes --dearmor -o /usr/share/keyrings/libcontainers-crio-archive-keyring.gpg"
  
     - name: crio | apt source
       ansible.builtin.apt_repository:
-        repo: "deb [signed-by=/usr/share/keyrings/libcontainers-crio-archive-keyring.gpg] https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/{{ crioVersion }}/Debian_11/ /"
+        repo: "deb [signed-by=/usr/share/keyrings/libcontainers-crio-archive-keyring.gpg] https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/{{ crioVersion }}/{{ debianVersion }}/ /"
         state: present
         filename: "devel:kubic:libcontainers:stable:cri-o:{{ crioVersion }}"
+  when: "crioVersion is version('1.28', '<', strict=true)"
+
+- name: add crio repository (crio >= 1.28)
+  block:
+    - name: crio | apt key
+      ansible.builtin.shell: "curl -fsSL https://pkgs.k8s.io/addons:/cri-o:/stable:/v{{ crioVersion }}/deb/Release.key | gpg --yes --dearmor -o /usr/share/keyrings/libcontainers-crio-archive-keyring.gpg"
+ 
+    - name: crio | apt source
+      ansible.builtin.apt_repository:
+        repo: "deb [signed-by=/usr/share/keyrings/libcontainers-crio-archive-keyring.gpg] https://pkgs.k8s.io/addons:/cri-o:/stable:/v{{ crioVersion }}/deb/ /"
+        state: present
+        filename: "cri-o:stable:v{{ crioVersion }}"
+  when: "crioVersion is version('1.28', '>=', strict=true)"
 
 - name: add libcontainer repository
   block:
     - name: libcontainer | apt key
-      ansible.builtin.shell: "curl -fsSL https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_11/Release.key | gpg --yes --dearmor -o /usr/share/keyrings/libcontainers-archive-keyring.gpg"
+      ansible.builtin.shell: "curl -fsSL https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/{{ debianVersion }}/Release.key | gpg --yes --dearmor -o /usr/share/keyrings/libcontainers-archive-keyring.gpg"
 
     - name: libcontainer | apt source
       ansible.builtin.apt_repository:
-        repo: "deb [signed-by=/usr/share/keyrings/libcontainers-archive-keyring.gpg] https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_11/ /"
+        repo: "deb [signed-by=/usr/share/keyrings/libcontainers-archive-keyring.gpg] https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/{{ debianVersion }}/ /"
         state: present
         filename: devel:kubic:libcontainers:stable

@@ -12,37 +12,48 @@
         - kubeadm={{ kube_version }}
         update_cache: true
 
-    - name: unhold 
+    - name: hold 
       ansible.builtin.dpkg_selections:
         name: kubeadm
         selection: hold
-      
-- name: kubadm plan
-  ansible.builtin.shell: kubeadm upgrade plan -o json | grep -iv "^\[[a-zA-Z]*].*$" | jq '.components[] | select(.name=="kubelet") | .newVersion' | tr -d '"'
-  register: new_version_out 
+
+- name: get kubeadm version
+  ansible.builtin.shell: kubeadm version -o json | jq -r '.clientVersion.gitVersion'
+  register: kubeadm_version_out
   when: hostvars['K8S_TOKEN_HOLDER']['plan_version'] is not defined
 
+- name: set plan version
+  ansible.builtin.set_fact:
+    plan_version: "{{ kubeadm_version_out.stdout }}"
+  when: hostvars['K8S_TOKEN_HOLDER']['plan_version'] is not defined
+
+- name: kubadm plan
+  ansible.builtin.shell: "kubeadm upgrade plan {{ plan_version }}"
+  register: kubeadm_plan_output
+  when: hostvars['K8S_TOKEN_HOLDER']['plan_version'] is not defined
+  
 - name: output plan
   ansible.builtin.debug:
-    msg: "plan stdout {{ new_version_out.stdout }}, stderr: {{ new_version_out.stderr }}"
+    msg: 
+    - "plan stdout:"
+    - "{{ kubeadm_plan_output.stdout_lines | default('N/A') }}"
+    - "----------------------------------------------------"
+    - "stderr:"
+    - "{{ kubeadm_plan_output.stderr_lines | default('N/A') }}"
+  ignore_errors: true
   when: hostvars['K8S_TOKEN_HOLDER']['plan_version'] is not defined
 
-- name: set fact
-  ansible.builtin.set_fact:
-    new_version: "{{ new_version_out.stdout | default('v0.0.0', true) }}"
+- name: check config
+  ansible.builtin.pause:
+    prompt:
+    - "PLEASE READ THROUGH THE LOG OUTPUT ABOVE"
+    - "if you are fine with the output of 'kubeadm upgrade plan' you may continue"
+    - "this message only appears on the initial upgrade process"
+    minutes: 15
   when: hostvars['K8S_TOKEN_HOLDER']['plan_version'] is not defined
 
-- name: register plan version to dummy host
+- name: register planned version to dummy host
   add_host:
     name: "K8S_TOKEN_HOLDER"
-    plan_version: "{{ new_version }}"
+    plan_version: "{{ plan_version }}"
   when: hostvars['K8S_TOKEN_HOLDER']['plan_version'] is not defined
-
-- name: make sure installed version equals planned version
-  ansible.builtin.debug:
-    msg: "planned version: {{ hostvars['K8S_TOKEN_HOLDER']['plan_version'] }} and apt package version: {{ kube_version }}" 
-
-- name: make sure installed version equals planned version
-  ansible.builtin.fail:
-    msg: versions not equal or you are on the latest patch of {{ kubeVersion }}
-  when: hostvars['K8S_TOKEN_HOLDER']['plan_version'][1:] is version(kube_version.split('-')[0], 'ne')

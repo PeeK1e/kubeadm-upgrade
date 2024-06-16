@@ -1,4 +1,14 @@
 ---
+- name: ensure req. packages are installed
+  hosts: nodes, control-plane
+  become: true
+  gather_facts: false
+  tasks:
+  - ansible.builtin.apt:
+      package:
+        - jq
+      state: present
+
 - name: upgrade first control plane
   hosts: control-plane[0]
   become: true 
@@ -16,7 +26,7 @@
   - role: upgrade-cp
     action: upgrade-other-cp
 
-- name: upgrade packages on cps
+- name: upgrade packages on control planes
   serial: 1
   hosts: control-plane
   become: true
@@ -24,7 +34,7 @@
   tasks:
   - include_role:
       name: common
-      tasks_from: upgrade-node 
+      tasks_from: upgrade-node
 
 - name: upgrade nodes
   serial: 1

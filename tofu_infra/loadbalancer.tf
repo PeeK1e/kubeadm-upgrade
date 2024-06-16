@@ -1,7 +1,18 @@
+resource "random_id" "lb" {
+  keepers = {
+    # Generate a new id each time we switch to a new AMI id
+    ami_id = hcloud_network.k8s.id
+  }
+
+  byte_length = 8
+}
+
 resource "hcloud_load_balancer" "k8s" {
-  name               = "k8s-lb"
+  name               = "k8s-lb-${random_id.lb.hex}"
   load_balancer_type = "lb11"
-  location           = "nbg1"
+  location           = "fsn1"
+
+  depends_on = [ hcloud_server.control-planes ]
 }
 
 resource "hcloud_load_balancer_network" "k8s" {

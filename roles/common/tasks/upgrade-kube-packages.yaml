@@ -3,45 +3,23 @@
   ansible.builtin.apt:
     name: "*"
     state: latest
+    update_cache: true
 
 - name: get variables
   ansible.builtin.include_tasks: "get-versions.yaml"
 
-- name: unhold packages
-  block:
-    - name: kubeadm
-      ansible.builtin.dpkg_selections:
-        name: kubeadm
-        selection: install #equals unhold
-
-    - name: kubelet
-      ansible.builtin.dpkg_selections:
-        name: kubelet
-        selection: install #equals unhold
-
-    - name: kubectl
-      ansible.builtin.dpkg_selections:
-        name: kubectl
-        selection: install #equals unhold
-
-    - name: cri-o-runc
-      ansible.builtin.dpkg_selections:
-        name: cri-o-runc
-        selection: install #equals unhold
-
-    - name: cri-o
-      ansible.builtin.dpkg_selections:
-        name: cri-o
-        selection: install #equals unhold
-
 - name: upgrade and install
   ansible.builtin.apt:  
     pkg:
+    - jq
     - cri-o-runc
     - cri-o
     - kubelet={{ kube_version }}
     - kubeadm={{ kube_version }}
     - kubectl={{ kube_version }}
+    allow_change_held_packages: true
+    update_cache: true
+    state: latest
 
 - name: hold packages
   block:
@@ -69,3 +47,7 @@
       ansible.builtin.dpkg_selections:
         name: cri-o
         selection: hold
+
+- name: Remove dependencies that are no longer required
+  ansible.builtin.apt:
+    autoremove: yes
