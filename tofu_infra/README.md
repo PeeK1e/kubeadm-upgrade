@@ -15,5 +15,6 @@ We use `cri-o`, `kubeadm` and `cilium` to setup the cluster.
 If you encounter any issue with the cilium install, just run the script again and it should work.
 
 ## Output
-You will receive an `inventory`,`kubeconfig` and `ssh-key` files in the `local/` directory which you can use to test the cluster.
-You may have to copy the files to your `~/.ssh` directory in order to connect via ssh.
+You will receive `inventory`,`kubeconfig` and `ssh-key` files in the `local/` directory which you can use to test the cluster.
+
+If you are using an SSH agent, add the generated key to the keyring with `ssh-add local/tofu-ssh` and you should be good to go.

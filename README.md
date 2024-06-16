@@ -1,26 +1,38 @@
-# Kubeadm Upgrade
+# ✨ Kubeadm Upgrade ✨
 
-⚠ **Kubernetes 1.30 is not yet supported, since there are some changes in the kubeadm upgrade steps** ⚠
+> **⚠️ Always test your upgrades on a test cluster first! ⚠️**
 
-You can upgrade your kubeadm, cri-o, Debian 11/12 based kubernetes cluster with this ansible script
+---
 
-<img src="./res/me_upgrading_the_cluster.png" alt="people praying to a server rack" width="200"/>
+Upgrade your kubeadm, cri-o, Debian 11/12 based Kubernetes cluster with this Ansible playbook.
 
-## Getting Started
+I tested it with version 1.28 through 1.30.
+It should work with versions less than 1.28, depending on the mirror availability and packages on the mirrors.
 
-### Dependencies
+## 🚀 Getting Started
 
-* ansible
-* ansible-playbook
-* python3
+### 📋 Dependencies
 
-### Settings
+- `ansible`
+- `ansible-playbook`
+- `python3`
 
-Copy the `inventory.testing` file and fill in your nodes. **Make sure to use the host name, the nodes have in the cluster, since this script uses these to drain the nodes via kubectl**
+### ⚙️ Settings
+> **⚠️ Use the exact host names as in your cluster since the script uses these to drain the nodes via kubectl ⚠️**
 
-In the `group_vars` check the global options. It's best to run the playbook once for your current version, to make sure that you're on the latest patch version.
+1. Copy `inventory.testing` and fill in your nodes.
+2. In `group_vars`, check the global options. Run the playbook once for **your current version** to ensure you're on the latest patch version.
 
-### Usage
+### ▶️ Usage
 
-Run the playbook with `ansible-playbook -i inventory --private-key=~/.ssh/ssh-key upgrade_cluster.yaml`. Grab a cup of coffee and wait.
+Run the playbook with:
 
+```bash
+ansible-playbook -i inventory --private-key=~/.ssh/ssh-key upgrade_cluster.yaml
+```
+
+There will be a prompt, where you're asked to confirm the plan. When you're satisfied with the planned output, press `ctrl+c` and `c` again to continue or `a` to abort.
+
+All that's left is to grab a cup of coffee, wait, and pray.
+
+<img src="./res/me_upgrading_the_cluster.png" alt="multiple people praying to a server rack" width="200"/>

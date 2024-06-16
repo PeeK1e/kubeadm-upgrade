@@ -4,7 +4,7 @@ resource "hcloud_server" "control-planes" {
   image       = "debian-12"
   server_type = each.value.type
   public_net {
-    ipv6_enabled = false
+    ipv6_enabled = true
   }
   ssh_keys = [
     hcloud_ssh_key.tofu-key.name
@@ -46,11 +46,7 @@ apt:
       filename: kubic.list
 # install packages
 package_update: true
-packages:
-    - cri-o-runc
-    - cri-o
 runcmd:
-  - apt install -y kubeadm=${var.kube_version}.* kubectl=${var.kube_version}.* kubelet=${var.kube_version}.*
   - |
     cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
     overlay
@@ -62,10 +58,9 @@ runcmd:
     net.bridge.bridge-nf-call-ip6tables = 1
     net.ipv4.ip_forward                 = 1
     EOF
-  - sudo modprobe overlay
-  - sudo modprobe br_netfilter
-  - sudo sysctl --system
-  - sudo systemctl enable --now crio
+  - sudo modprobe overlay 
+  - sudo modprobe br_netfilter 
+  - sysctl -p
   - sudo rm -rf "/etc/cni/net.d/*"
 EOT
 }

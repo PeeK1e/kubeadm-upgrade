@@ -1,8 +1,10 @@
 ---
+# running debian version. supported values: Debian_11, Debian_12
+debianVersion: "Debian_12"
 # targeted kubernetes version in major.minor
-kubeVersion: "1.29"
+kubeVersion: "1.30"
 # targeted crio version in major.minor
-crioVersion: "1.28"
+crioVersion: "1.30"
 # time until a pod is killed
 drainGracePeriod: 30
 # time until the drain command times out
@@ -13,7 +15,15 @@ pauseDelayUncordon: 30
 # repo list to remove in /etc/apt/sources.list.d/
 repoList:
   - "repo_vanillastack_cloudical_net.list"
-  - "devel:kubic:libcontainers:stable:cri-o:1.28.list"
   - "devel:kubic:libcontainers:stable:cri-o:1.27.list"
+  - "devel:kubic:libcontainers:stable:cri-o:1.28.list"
+  - "devel:kubic:libcontainers:stable:cri-o:1.29.list"
+  - "devel:kubic:libcontainers:stable:cri-o:1.30.list"
   - "devel:kubic:libcontainers:stable.list"
+  - "kubernetes-stable.list"
   - "kubernetes.list"
+  - "kubic.list"
+  - "crio.list"
+  - "cri-o:stable:v1.28.list"
+  - "cri-o:stable:v1.29.list"
+  - "cri-o:stable:v1.30.list"

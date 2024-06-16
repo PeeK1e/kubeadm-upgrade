@@ -3,6 +3,26 @@ resource "hcloud_ssh_key" "tofu-key" {
   public_key = tls_private_key.ssh-key.public_key_openssh
 }
 
+resource "ssh_resource" "add_kube_packages" {
+  for_each = merge(hcloud_server.worker, hcloud_server.control-planes)
+
+  host = each.value.ipv4_address
+
+  user = "root"
+  when = "create"
+  agent = false
+  
+  private_key = tls_private_key.ssh-key.private_key_openssh
+
+  commands = [
+    "apt -o Acquire::ForceIPv6=true update",
+    "apt -o Acquire::ForceIPv6=true install -y cri-o-runc cri-o",
+    "apt -o Acquire::ForceIPv6=true install -y kubeadm=${var.kube_version}.* kubectl=${var.kube_version}.* kubelet=${var.kube_version}.*",
+    "sudo sysctl --system",
+    "sudo systemctl enable --now crio"
+  ]
+}
+
 resource "ssh_resource" "bootstrap_first_cp" {
   host = hcloud_server.control-planes[keys(var.control-plane)[0]].ipv4_address
   # host = hcloud_server_network.cp[keys(var.control-plane)[0]].ip
@@ -26,7 +46,8 @@ resource "ssh_resource" "bootstrap_first_cp" {
     hcloud_load_balancer.k8s,
     hcloud_server.control-planes,
     hcloud_load_balancer_target.cp,
-    hcloud_load_balancer_network.k8s
+    hcloud_load_balancer_network.k8s,
+    ssh_resource.add_kube_packages
   ]
 }
 
