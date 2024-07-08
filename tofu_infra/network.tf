@@ -62,7 +62,8 @@ resource "hcloud_firewall" "k8s_intern" {
     port      = "1-65535"
     direction = "in"
     source_ips = [
-      hcloud_network_subnet.k8s.ip_range
+      hcloud_network.k8s.ip_range,
+      "10.0.0.0/8"
     ]
   }
   rule {
@@ -70,7 +71,8 @@ resource "hcloud_firewall" "k8s_intern" {
     port      = "1-65535"
     direction = "in"
     source_ips = [
-      hcloud_network_subnet.k8s.ip_range
+      hcloud_network.k8s.ip_range,
+      "10.0.0.0/8"
     ]
   }
 }

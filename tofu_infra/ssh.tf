@@ -8,10 +8,10 @@ resource "ssh_resource" "add_kube_packages" {
 
   host = each.value.ipv4_address
 
-  user = "root"
-  when = "create"
+  user  = "root"
+  when  = "create"
   agent = false
-  
+
   private_key = tls_private_key.ssh-key.private_key_openssh
 
   commands = [
@@ -36,7 +36,7 @@ resource "ssh_resource" "bootstrap_first_cp" {
     <<EOF
         kubeadm init \
             --apiserver-advertise-address ${hcloud_server_network.cp[keys(var.control-plane)[0]].ip} \
-            --control-plane-endpoint ${hcloud_load_balancer.k8s.ipv4} \
+            --control-plane-endpoint ${hcloud_rdns.rdns-lb.dns_ptr} \
             --cri-socket="unix:///var/run/crio/crio.sock" \
             --pod-network-cidr 10.0.0.0/8 \
             --service-cidr 10.96.0.0/16
@@ -47,7 +47,8 @@ resource "ssh_resource" "bootstrap_first_cp" {
     hcloud_server.control-planes,
     hcloud_load_balancer_target.cp,
     hcloud_load_balancer_network.k8s,
-    ssh_resource.add_kube_packages
+    ssh_resource.add_kube_packages,
+    hcloud_rdns.rdns-lb
   ]
 }
 
