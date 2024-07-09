@@ -55,24 +55,55 @@ resource "hcloud_firewall" "k8s_pub" {
   }
 }
 
+# concat all ipv4 addresses
+locals {
+  cp_ips = [
+    for key in hcloud_server.control-planes : key.ipv4_address
+  ]
+  worker_ips = [
+    for key in hcloud_server.worker : key.ipv4_address
+  ]
+  ipset = [
+    for key in concat(local.cp_ips, local.worker_ips, [hcloud_network.k8s.ip_range, "10.0.0.0/8"]) : tostring(key)
+  ]
+}
+
 resource "hcloud_firewall" "k8s_intern" {
   name = "k8s_intern"
   rule {
     protocol  = "tcp"
     port      = "1-65535"
     direction = "in"
-    source_ips = [
-      hcloud_network.k8s.ip_range,
-      "10.0.0.0/8"
-    ]
+    source_ips = local.ipset
   }
   rule {
     protocol  = "udp"
     port      = "1-65535"
     direction = "in"
-    source_ips = [
-      hcloud_network.k8s.ip_range,
-      "10.0.0.0/8"
-    ]
+    source_ips = local.ipset
   }
+}
+
+resource "hcloud_firewall_attachment" "pub_attachment_worker" {
+  for_each = hcloud_server.worker
+  firewall_id = hcloud_firewall.k8s_pub.id
+  server_ids = [ each.value.id ]
+}
+
+resource "hcloud_firewall_attachment" "priv_attachment_worker" {
+  for_each = hcloud_server.worker
+  firewall_id = hcloud_firewall.k8s_intern.id
+  server_ids = [ each.value.id ]
+}
+
+resource "hcloud_firewall_attachment" "pub_attachment_cp" {
+  for_each = hcloud_server.control-planes
+  firewall_id = hcloud_firewall.k8s_pub.id
+  server_ids = [ each.value.id ]
+}
+
+resource "hcloud_firewall_attachment" "priv_attachment_cp" {
+  for_each = hcloud_server.control-planes
+  firewall_id = hcloud_firewall.k8s_intern.id
+  server_ids = [ each.value.id ]
 }

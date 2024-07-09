@@ -17,11 +17,6 @@ resource "hcloud_server" "control-planes" {
     type = "ssh"
   }
 
-  firewall_ids = [
-    hcloud_firewall.k8s_intern.id,
-    hcloud_firewall.k8s_pub.id
-  ]
-
   labels = {
     vm-type = "cp"
   }
