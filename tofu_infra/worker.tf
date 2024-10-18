@@ -6,6 +6,7 @@ resource "hcloud_server" "worker" {
   public_net {
     ipv6_enabled = true
   }
+
   ssh_keys = [
     hcloud_ssh_key.tofu-key.name
   ]

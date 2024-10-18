@@ -71,39 +71,39 @@ locals {
 resource "hcloud_firewall" "k8s_intern" {
   name = "k8s_intern"
   rule {
-    protocol  = "tcp"
-    port      = "1-65535"
-    direction = "in"
+    protocol   = "tcp"
+    port       = "1-65535"
+    direction  = "in"
     source_ips = local.ipset
   }
   rule {
-    protocol  = "udp"
-    port      = "1-65535"
-    direction = "in"
+    protocol   = "udp"
+    port       = "1-65535"
+    direction  = "in"
     source_ips = local.ipset
   }
 }
 
 resource "hcloud_firewall_attachment" "pub_attachment_worker" {
-  for_each = hcloud_server.worker
+  for_each    = hcloud_server.worker
   firewall_id = hcloud_firewall.k8s_pub.id
-  server_ids = [ each.value.id ]
+  server_ids  = [each.value.id]
 }
 
 resource "hcloud_firewall_attachment" "priv_attachment_worker" {
-  for_each = hcloud_server.worker
+  for_each    = hcloud_server.worker
   firewall_id = hcloud_firewall.k8s_intern.id
-  server_ids = [ each.value.id ]
+  server_ids  = [each.value.id]
 }
 
 resource "hcloud_firewall_attachment" "pub_attachment_cp" {
-  for_each = hcloud_server.control-planes
+  for_each    = hcloud_server.control-planes
   firewall_id = hcloud_firewall.k8s_pub.id
-  server_ids = [ each.value.id ]
+  server_ids  = [each.value.id]
 }
 
 resource "hcloud_firewall_attachment" "priv_attachment_cp" {
-  for_each = hcloud_server.control-planes
+  for_each    = hcloud_server.control-planes
   firewall_id = hcloud_firewall.k8s_intern.id
-  server_ids = [ each.value.id ]
+  server_ids  = [each.value.id]
 }

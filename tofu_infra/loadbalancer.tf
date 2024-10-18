@@ -22,11 +22,11 @@ locals {
 }
 
 resource "hcloud_rdns" "rdns-lb" {
-  load_balancer_id = "${hcloud_load_balancer.k8s.id}"
-  ip_address = "${hcloud_load_balancer.k8s.ipv4}"
-  dns_ptr = "static.${local.rip}.clients.your-server.de"
-  
-  depends_on = [ hcloud_load_balancer.k8s ]
+  load_balancer_id = hcloud_load_balancer.k8s.id
+  ip_address       = hcloud_load_balancer.k8s.ipv4
+  dns_ptr          = "static.${local.rip}.clients.your-server.de"
+
+  depends_on = [hcloud_load_balancer.k8s]
 }
 
 resource "hcloud_load_balancer_network" "k8s" {

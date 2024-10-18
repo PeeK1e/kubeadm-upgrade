@@ -17,8 +17,8 @@ terraform {
       version = "2.14.0"
     }
     kubectl = {
-      source  = "gavinbunney/kubectl"
-      version = "1.14.0"
+      source  = "alekc/kubectl"
+      version = "~> 2.0"
     }
   }
   backend "local" {
@@ -31,6 +31,7 @@ provider "hcloud" {
 
 provider "ssh" {
 }
+
 provider "helm" {
   kubernetes {
     config_path = "${path.cwd}/local/kubeconfig"
@@ -38,6 +39,7 @@ provider "helm" {
 }
 
 provider "kubectl" {
-  config_path = "${path.cwd}/local/kubeconfig"
-  apply_retry_count = 4
+  load_config_file  = true
+  apply_retry_count = 3
+  config_path       = "${path.cwd}/local/kubeconfig"
 }

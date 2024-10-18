@@ -1,10 +1,10 @@
 data "template_file" "cilium-values" {
-  template = "${file("helm/cilium.yaml")}"
+  template = file("helm/cilium.yaml")
   vars = {
     cluster_address = hcloud_rdns.rdns-lb.dns_ptr
   }
 
-  depends_on = [ hcloud_rdns.rdns-lb ]
+  depends_on = [hcloud_rdns.rdns-lb]
 }
 
 resource "helm_release" "cilium" {
@@ -64,9 +64,9 @@ EOF
 }
 
 resource "kubectl_manifest" "clusterissuer-letsencrypt" {
-  apply_only = true
+  apply_only       = true
   wait_for_rollout = false
-  yaml_body = <<-YAML
+  yaml_body        = <<-YAML
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
@@ -98,6 +98,8 @@ metadata:
 stringData:
   token: "${var.hcloud_token}"
 YAML
+
+  depends_on = [helm_release.cilium]
 }
 
 resource "helm_release" "hcloud-csi" {
@@ -114,5 +116,5 @@ resource "helm_release" "hcloud-csi" {
   depends_on = [
     helm_release.cilium,
     kubectl_manifest.hcloud-csi-token
-    ]
+  ]
 }
