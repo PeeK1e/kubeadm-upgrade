@@ -85,25 +85,21 @@ resource "hcloud_firewall" "k8s_intern" {
 }
 
 resource "hcloud_firewall_attachment" "pub_attachment_worker" {
-  for_each    = hcloud_server.worker
   firewall_id = hcloud_firewall.k8s_pub.id
-  server_ids  = [each.value.id]
+  label_selectors =  [ "vm-type=cp", "vm-type=worker" ]
 }
 
 resource "hcloud_firewall_attachment" "priv_attachment_worker" {
-  for_each    = hcloud_server.worker
   firewall_id = hcloud_firewall.k8s_intern.id
-  server_ids  = [each.value.id]
+  label_selectors =  [ "vm-type=cp", "vm-type=worker" ]
 }
 
 resource "hcloud_firewall_attachment" "pub_attachment_cp" {
-  for_each    = hcloud_server.control-planes
   firewall_id = hcloud_firewall.k8s_pub.id
-  server_ids  = [each.value.id]
+  label_selectors =  [ "vm-type=cp", "vm-type=worker" ]
 }
 
 resource "hcloud_firewall_attachment" "priv_attachment_cp" {
-  for_each    = hcloud_server.control-planes
   firewall_id = hcloud_firewall.k8s_intern.id
-  server_ids  = [each.value.id]
+  label_selectors =  [ "vm-type=cp", "vm-type=worker" ]
 }

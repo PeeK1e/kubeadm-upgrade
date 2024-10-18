@@ -4,6 +4,8 @@
   become: true
   gather_facts: false
   tasks:
+  - name: Example from an Ansible Playbook
+    ansible.builtin.ping:
   - ansible.builtin.apt:
       package:
         - jq

@@ -3,6 +3,8 @@ resource "hcloud_server" "control-planes" {
   name        = each.value.name
   image       = "debian-12"
   server_type = each.value.type
+  location    = "nbg1"
+
   public_net {
     ipv6_enabled = true
   }
