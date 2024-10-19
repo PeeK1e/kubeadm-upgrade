@@ -11,6 +11,16 @@
         - jq
       state: present
 
+- name: register override version to dummy host
+  hosts: localhost
+  become: false
+  gather_facts: false
+  tasks:
+  - add_host:
+      name: "K8S_TOKEN_HOLDER"
+      plan_version: "{{ overridePlanVersion }}"
+    when: overridePlanVersion | length > 0
+
 - name: upgrade first control plane
   hosts: control-plane[0]
   become: true 
