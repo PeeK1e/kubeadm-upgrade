@@ -20,21 +20,24 @@
 
 - name: reload services
   block:
-  - ansible.builtin.systemd_service:
-      daemon_reload: true    
-  - ansible.builtin.systemd_service:
+  - name: Systemd Daemon Reload
+    ansible.builtin.systemd_service:
+      daemon_reload: true
+  - name: Restart Cri-o
+    ansible.builtin.systemd_service:
       enabled: true
       state: restarted
       name: crio
-  - ansible.builtin.systemd_service:
+  - name: Restart kubelet
+    ansible.builtin.systemd_service:
       enabled: true
       state: restarted
       name: kubelet
 
-- name: restart machine
-  ansible.builtin.reboot:
+- name: Restart machine
+  ansible.builtin.reboot: ""
 
-- name: wait for kubelet to be running
+- name: Wait for kubelet to be running
   ansible.builtin.systemd_service:
     name: kubelet
     state: started
@@ -52,7 +55,7 @@
   delay: 15
   ignore_errors: true
 
-- name: wait uncordon
-  pause:
-    prompt: Pausing after uncordon. (press ctrl+c and a to continue immediately) 
+- name: Wait uncordon
+  ansible.builtin.pause:
+    prompt: Pausing after uncordon. (press ctrl+c and a to continue immediately)
     seconds: "{{ pauseDelayUncordon }}"

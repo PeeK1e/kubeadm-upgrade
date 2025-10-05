@@ -1,10 +1,10 @@
 ---
-- name: include common
+- name: Include common
   ansible.legacy.include_role:
     name: common
 
-- name: run plan
+- name: Run plan
   ansible.builtin.include_tasks: "controlplane-plan.yaml"
 
-- name: upgrade node
+- name: Upgrade node
   ansible.builtin.shell: "kubeadm upgrade node"

@@ -1,6 +1,6 @@
 ---
-- name: "packages"
+- name: "Packages"
   ansible.builtin.include_tasks: "upgrade-repo.yaml"
 
-- name: "artifacts"
+- name: "Artifacts"
   ansible.builtin.include_tasks: "get-versions.yaml"

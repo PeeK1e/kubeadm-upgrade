@@ -1,57 +1,60 @@
 ---
-- name: ensure req. packages are installed
+- name: Ensure req. packages are installed
   hosts: nodes, control-plane
   become: true
   gather_facts: false
   tasks:
-  - name: Example from an Ansible Playbook
-    ansible.builtin.ping:
-  - ansible.builtin.apt:
-      package:
-        - jq
-      state: present
+    - name: Example from an Ansible Playbook
+      ansible.builtin.ping: ""
+    - name: Ensure Packages
+      ansible.builtin.apt:
+        package:
+          - jq
+        state: present
 
-- name: register override version to dummy host
+- name: Register override version to dummy host
   hosts: localhost
   become: false
   gather_facts: false
   tasks:
-  - add_host:
-      name: "K8S_TOKEN_HOLDER"
-      plan_version: "{{ overridePlanVersion }}"
-    when: overridePlanVersion | length > 0
+    - name: Add temporary variables
+      ansible.builtin.add_host:
+        name: "K8S_TOKEN_HOLDER"
+        plan_version: "{{ overridePlanVersion }}"
+      when: overridePlanVersion | length > 0
 
-- name: upgrade first control plane
+- name: Upgrade first control plane
   hosts: control-plane[0]
-  become: true 
+  become: true
   gather_facts: true
   roles:
-  - role: upgrade-cp
-    action: upgrade-first-cp
+    - role: upgrade-cp
+      role_action: upgrade-first-cp
 
-- name: patch other cp
+- name: Patch other cp
   serial: 1
   hosts: control-plane[1:]
   become: true
   gather_facts: true
   roles:
-  - role: upgrade-cp
-    action: upgrade-other-cp
+    - role: upgrade-cp
+      role_action: upgrade-other-cp
 
-- name: upgrade packages on control planes
+- name: Upgrade packages on control planes
   serial: 1
   hosts: control-plane
   become: true
   gather_facts: true
   tasks:
-  - include_role:
-      name: common
-      tasks_from: upgrade-node
+    - name: "Upgrade node role"
+      ansible.builtin.include_role:
+        name: common
+        tasks_from: upgrade-node
 
-- name: upgrade nodes
+- name: Upgrade nodes
   serial: 1
   hosts: nodes
   become: true
   gather_facts: true
   roles:
-  - role: upgrade-node
+    - role: upgrade-node

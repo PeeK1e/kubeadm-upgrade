@@ -2,21 +2,22 @@
 # running debian version. supported values: Debian_11, Debian_12
 debianVersion: "Debian_12"
 # targeted kubernetes version in major.minor
-kubeVersion: "1.31"
+kubeVersion: "1.32"
 # targeted crio version in major.minor
-crioVersion: "1.31"
+crioVersion: "1.32"
 # time until a pod is killed
 drainGracePeriod: 120
 # time until the drain command times out
 drainTimeOut: 180s
 # time to wait in seconds inbetween upgrade operations
-pauseDelayCordon: 30
-pauseDelayUncordon: 30
+pauseDelayCordon: 10
+pauseDelayUncordon: 10
 # override plan Version -> this will skip the fact gathering and first apply of the upgrade
 # this can help when the playbook aborted at some point
 # eg. overridePlanVersion: 'v1.31.1'
 overridePlanVersion: ''
 # repo list to remove in /etc/apt/sources.list.d/
+# If we have some other mechanism to remove old sources do it ansible file absent does not support globbing
 repoList:
   - "repo_vanillastack_cloudical_net.list"
   - "devel:kubic:libcontainers:stable:cri-o:1.27.list"
@@ -34,3 +35,9 @@ repoList:
   - "cri-o:stable:v1.28.list"
   - "cri-o:stable:v1.29.list"
   - "cri-o:stable:v1.30.list"
+  - "cri-o:stable:v1.31.list"
+  - "cri-o:stable:v1.32.list"
+  - "cri-o:stable:v1.33.list"
+  - "cri-o:stable:v1.34.list"
+
+
