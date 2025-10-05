@@ -14,7 +14,7 @@
       ansible.builtin.apt_repository:
         repo: "deb [signed-by=/usr/share/keyrings/kubernetes-key-{{ kubeVersion }}.gpg] https://pkgs.k8s.io/core:/stable:/v{{ kubeVersion }}/deb/ /"
         state: present
-        filename: kubernetes
+        filename: "kubernetes.list"
  
 - name: Add crio repository
   block:
@@ -25,7 +25,7 @@
       ansible.builtin.apt_repository:
         repo: "deb [signed-by=/usr/share/keyrings/libcontainers-crio-archive-keyring-{{ crioVersion }}.gpg] https://download.opensuse.org/repositories/isv:/cri-o:/stable:/v{{ crioVersion }}/deb/ /"
         state: present
-        filename: "cri-o:stable:v{{ crioVersion }}"
+        filename: "crio.list"
 
 - name: Add libcontainer repository
   block:
@@ -36,4 +36,4 @@
       ansible.builtin.apt_repository:
         repo: "deb [signed-by=/usr/share/keyrings/libcontainers-archive-keyring-{{ debianVersion }}.gpg] https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/{{ debianVersion }}/ /"
         state: present
-        filename: devel:kubic:libcontainers:stable
+        filename: "libcontainer.list"

@@ -30,10 +30,6 @@ repoList:
   - "devel:kubic:libcontainers:stable:cri-o:1.34.list"
   - "devel:kubic:libcontainers:stable:cri-o:1.35.list"
   - "devel:kubic:libcontainers:stable.list"
-  - "kubernetes-stable.list"
-  - "kubernetes.list"
-  - "kubic.list"
-  - "crio.list"
   - "cri-o:stable:v1.28.list"
   - "cri-o:stable:v1.29.list"
   - "cri-o:stable:v1.30.list"
@@ -42,5 +38,8 @@ repoList:
   - "cri-o:stable:v1.33.list"
   - "cri-o:stable:v1.34.list"
   - "cri-o:stable:v1.35.list"
-
-
+  - "kubernetes-stable.list"
+  - "kubernetes.list"
+  - "kubic.list"
+  - "crio.list"
+  - "libcontainer.list"
