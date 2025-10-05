@@ -2,9 +2,9 @@
 # running debian version. supported values: Debian_11, Debian_12
 debianVersion: "Debian_12"
 # targeted kubernetes version in major.minor
-kubeVersion: "1.32"
+kubeVersion: "1.34"
 # targeted crio version in major.minor
-crioVersion: "1.32"
+crioVersion: "1.34"
 # time until a pod is killed
 drainGracePeriod: 120
 # time until the drain command times out
@@ -27,6 +27,8 @@ repoList:
   - "devel:kubic:libcontainers:stable:cri-o:1.31.list"
   - "devel:kubic:libcontainers:stable:cri-o:1.32.list"
   - "devel:kubic:libcontainers:stable:cri-o:1.33.list"
+  - "devel:kubic:libcontainers:stable:cri-o:1.34.list"
+  - "devel:kubic:libcontainers:stable:cri-o:1.35.list"
   - "devel:kubic:libcontainers:stable.list"
   - "kubernetes-stable.list"
   - "kubernetes.list"
@@ -39,5 +41,6 @@ repoList:
   - "cri-o:stable:v1.32.list"
   - "cri-o:stable:v1.33.list"
   - "cri-o:stable:v1.34.list"
+  - "cri-o:stable:v1.35.list"
 
 
